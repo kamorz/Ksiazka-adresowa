@@ -4,12 +4,13 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <cstdlib>
 
 using namespace std;
 
 struct Adresat
 {
-    int id, idWlasciciela;
+    int idGlobalne, idUzytkowe, idWlasciciela;
     string imie, nazwisko, email, adres, numer_tel;
 };
 
@@ -97,24 +98,27 @@ Adresat PorzadkowanieDanychAdresata (string kompletDanychAdresata)
             switch (numerInformacji)
             {
             case 1:
-                adresat.id = atoi (informacja.c_str());
+                adresat.idGlobalne = atoi (informacja.c_str());
                 break;
             case 2:
-                adresat.idWlasciciela= atoi (informacja.c_str());
+                adresat.idUzytkowe = atoi (informacja.c_str());
                 break;
             case 3:
-                adresat.imie= informacja;
+                adresat.idWlasciciela= atoi (informacja.c_str());
                 break;
             case 4:
-                adresat.nazwisko= informacja;
+                adresat.imie= informacja;
                 break;
             case 5:
-                adresat.numer_tel= informacja;
+                adresat.nazwisko= informacja;
                 break;
             case 6:
-                adresat.email= informacja;
+                adresat.numer_tel= informacja;
                 break;
             case 7:
+                adresat.email= informacja;
+                break;
+            case 8:
                 adresat.adres= informacja;
                 break;
             }
@@ -150,10 +154,6 @@ void PobranieListyAdresatowZPliku (vector <Adresat>&adresaci, int idZalogowanego
         plik.close();
     }
 }
-
-
-
-
 
 
 
@@ -220,9 +220,9 @@ int LogowanieUzytkownika (vector <Uzytkownik>&uzytkownicy, vector <Adresat>&adre
                     Sleep(1000);
                     adresaci.clear();
                     PobranieListyAdresatowZPliku(adresaci,uzytkownicy[i].id);
-
+                    //cout<<calkowitaIloscAdresatow;
+                    //system("pause");
                     return uzytkownicy[i].id;
-
                 }
             }
             cout<<"Podales 3 razy nieprawidlowe haslo. Powrot do menu glownego";
@@ -263,7 +263,8 @@ void UaktualnienieAdresatowWPliku (vector <Adresat>&adresaci, int idZalogowanego
         plik.open("Adresaci_tymczasowy.txt",ios::out);
         for (int i=0; i<adresaci.size(); i++)
         {
-            plik<<adresaci[i].id<<"|";
+            plik<<adresaci[i].idGlobalne<<"|";
+            plik<<adresaci[i].idUzytkowe<<"|";
             plik<<adresaci[i].idWlasciciela<<"|";
             plik<<adresaci[i].imie<<"|";
             plik<<adresaci[i].nazwisko<<"|";
@@ -298,7 +299,8 @@ void UzupelnieniePozostalychAdresatowWPliku (vector <Adresat>&adresaci, int idZa
         plik.open("Adresaci_tymczasowy.txt",ios::app);
         for (int i=0; i<adresaci.size(); i++)
         {
-            plik<<adresaci[i].id<<"|";
+            plik<<adresaci[i].idGlobalne<<"|";
+            plik<<adresaci[i].idUzytkowe<<"|";
             plik<<adresaci[i].idWlasciciela<<"|";
             plik<<adresaci[i].imie<<"|";
             plik<<adresaci[i].nazwisko<<"|";
@@ -395,7 +397,8 @@ void Wyswietlanie_calej_listy (vector <Adresat> &adresaci)
     {
         for (vector<Adresat>::iterator itr=adresaci.begin(); itr!=adresaci.end(); itr++)
         {
-            cout<<"ID:             "<<itr->id<<endl;
+            //cout<<"probnie wyswietlamy ID globalne: "<<itr->idGlobalne<<endl<<endl;
+            cout<<"ID:             "<<itr->idUzytkowe<<endl;
             cout<<"imie:           "<<itr->imie<<endl;
             cout<<"nazwisko:       "<<itr->nazwisko<<endl;
             cout<<"numer telefonu: "<<itr->numer_tel<<endl;
@@ -433,7 +436,7 @@ void Wyszukiwanie_po_imieniu (vector <Adresat> &adresaci)
 
             if (itr->imie==szukane_imie)
             {
-                cout<<"ID:             "<<itr->id<<endl;
+                cout<<"ID:             "<<itr->idUzytkowe<<endl;
                 cout<<"imie:           "<<itr->imie<<endl;
                 cout<<"nazwisko:       "<<itr->nazwisko<<endl;
                 cout<<"numer telefonu: "<<itr->numer_tel<<endl;
@@ -478,7 +481,7 @@ void Wyszukiwanie_po_nazwisku (vector <Adresat> &adresaci)
 
             if (itr->nazwisko==szukane_nazwisko)
             {
-                cout<<"ID:             "<<itr->id<<endl;
+                cout<<"ID:             "<<itr->idUzytkowe<<endl;
                 cout<<"imie:           "<<itr->imie<<endl;
                 cout<<"nazwisko:       "<<itr->nazwisko<<endl;
                 cout<<"numer telefonu: "<<itr->numer_tel<<endl;
@@ -508,7 +511,7 @@ void Wyszukiwanie_po_nazwisku (vector <Adresat> &adresaci)
 
 
 
-vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZalogowanego)
+vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZalogowanego, int najwyzszyZajetyID)
 {
     Adresat adresat;
     system("cls");
@@ -516,11 +519,11 @@ vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZal
 
     if (adresaci.empty()==true)
     {
-        adresat.id=1;
+        adresat.idUzytkowe=1;
     }
     else
     {
-        adresat.id=adresaci.back().id+1;
+        adresat.idUzytkowe=adresaci.back().idUzytkowe+1;
     }
     adresat.idWlasciciela=IDZalogowanego;
     cout<<"Podaj imie: ";
@@ -549,6 +552,7 @@ vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZal
     cout<<"Podaj adres: ";
     cin.sync();
     getline (cin, adresat.adres);
+    adresat.idGlobalne=najwyzszyZajetyID+1;
 
     adresaci.push_back(adresat);
     system("cls");
@@ -565,7 +569,7 @@ vector <Adresat> KorygowanieIDAdresatow (vector <Adresat> &adresaci)
     int numer=1;
     for (int i=0; i<adresaci.size();i++)
     {
-        adresaci[i].id= numer;
+        adresaci[i].idUzytkowe= numer;
         numer+=1;
     }
     return adresaci;
@@ -586,7 +590,7 @@ vector <Adresat> Usuwanie_pozycji_z_ksiazki (vector <Adresat> &adresaci)
         cout<<"Wybierz numer pozycji do usuniecia:"<<endl;
         for (vector<Adresat>::iterator itr=adresaci.begin(); itr!=adresaci.end(); itr++)
         {
-            cout<<itr->id<<" "<<itr->imie<<" "<<itr->nazwisko<<" (tel.: "<<itr->numer_tel<<")"<<endl;
+            cout<<itr->idUzytkowe<<" "<<itr->imie<<" "<<itr->nazwisko<<" (tel.: "<<itr->numer_tel<<")"<<endl;
         }
         cout<<endl;
     }
@@ -682,7 +686,7 @@ vector <Adresat> Edytowanie_pozycji_z_ksiazki (vector <Adresat> &adresaci)
         cout<<"Wybierz numer pozycji, ktora chcesz edytowac:"<<endl;
         for (vector<Adresat>::iterator itr=adresaci.begin(); itr!=adresaci.end(); itr++)
         {
-            cout<<itr->id<<" "<<itr->imie<<" "<<itr->nazwisko<<" (tel.: "<<itr->numer_tel<<")"<<endl;
+            cout<<itr->idUzytkowe<<" "<<itr->imie<<" "<<itr->nazwisko<<" (tel.: "<<itr->numer_tel<<")"<<endl;
         }
         cout<<endl;
         cin>>pozycjaDoEdycji;
@@ -699,12 +703,39 @@ vector <Adresat> Edytowanie_pozycji_z_ksiazki (vector <Adresat> &adresaci)
 
 
 
+int UstalenieNajwyzszegoZajetegoIdAdresata (vector <Adresat>&adresaci)
+{
+    int najwyzszeZajeteID=0;
+    Adresat WyszukiwaczOsobyONajwyzszymID;
+    string liniaTekstu="";
+
+    fstream plik;
+    plik.open("Adresaci.txt",ios::in);
+
+    if (plik.good()==true)
+    {
+        while (getline(plik, liniaTekstu))
+        {
+            WyszukiwaczOsobyONajwyzszymID=PorzadkowanieDanychAdresata(liniaTekstu);
+            if (WyszukiwaczOsobyONajwyzszymID.idGlobalne>najwyzszeZajeteID)
+            {
+            najwyzszeZajeteID=WyszukiwaczOsobyONajwyzszymID.idGlobalne;
+            }
+        }
+        plik.close();
+    }
+    return najwyzszeZajeteID;
+}
+
+
+
 int main()
 {
     vector <Adresat> adresaci;
     vector <Uzytkownik> uzytkownicy;
 
     int idZalogowanegoUzytkownika=0;
+    int najwyzszyZajetyIdAdresata=UstalenieNajwyzszegoZajetegoIdAdresata(adresaci);
     char wybor;
     PobranieListyUzytkownikowZPliku(uzytkownicy);
     while (1)
@@ -733,13 +764,12 @@ int main()
         {
             system("cls");
             cout<<"Jestes zalogowany jako: "<<uzytkownicy[idZalogowanegoUzytkownika-1].nazwa<<endl<<endl;
+            cout<<"Pomocniczo- najwyzsze zajete id: "<<najwyzszyZajetyIdAdresata<<endl;
             cout<<"MENU GLOWNE TWOJEGO NIEZBEDNIKA"<<endl;
             cout<<"Wybierz sposrod opcji:"<<endl<<"1.Wyswietl cala ksiazke adresowa"<<endl;
             cout<<"2.Wyszukaj osobe po imieniu"<<endl<<"3.Wyszukaj osobe po nazwisku"<<endl;
             cout<<"4.Dodaj nowa pozycje do ksiazki"<<endl<<"5.Usun pozycje z ksiazki"<<endl;
-            cout<<"6.Edytuj pozycje"<<endl;
-            cout<<"8.Zmiana hasla"<<endl;
-            cout<<"9.Wylogowanie"<<endl;
+            cout<<"6.Edytuj pozycje"<<endl<<"8.Zmiana hasla"<<endl<<"9.Wylogowanie"<<endl;
             cin>>wybor;
             if (wybor=='1')
             {
@@ -755,7 +785,8 @@ int main()
             }
             if (wybor=='4')
             {
-                Wprowadzanie_nowych_osob(adresaci, idZalogowanegoUzytkownika);
+                Wprowadzanie_nowych_osob(adresaci, idZalogowanegoUzytkownika, najwyzszyZajetyIdAdresata);
+                najwyzszyZajetyIdAdresata+=1;
             }
             if (wybor=='5')
             {
