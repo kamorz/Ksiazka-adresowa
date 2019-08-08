@@ -22,7 +22,6 @@ struct Uzytkownik
 
 
 
-
 Uzytkownik PorzadkowanieDanychUzytkownika (string kompletDanychUzytkownika)
 {
     Uzytkownik uzytkownik;
@@ -206,7 +205,15 @@ vector <Uzytkownik> RejestracjaNowegoUzytkownika (vector <Uzytkownik>&uzytkownic
     }
     uzytkownicy.push_back(uzytkownik);
     cout<<"Konto zalozone."<<endl;
+
+    fstream plik;
+    plik.open("Uzytkownicy.txt",ios::app);
+    plik<<uzytkownik.id<<"|";
+    plik<<uzytkownik.nazwa<<"|";
+    plik<<uzytkownik.haslo<<"|"<<endl;
+    plik.close();
     Sleep(1000);
+
     return uzytkownicy;
 }
 
@@ -338,11 +345,6 @@ int WylogowanieZKonta (vector <Adresat>&adresaci, int idZalogowanego)
     {
     cout<<"Zostales wylogowany"<<endl;
     Sleep(1500);
-    UaktualnienieAdresatowWPliku (adresaci, idZalogowanego);
-    adresaci.clear();
-    UzupelnieniePozostalychAdresatowWPliku (adresaci, idZalogowanego);
-    remove("Adresaci.txt");
-    rename( "Adresaci_tymczasowy.txt", "Adresaci.txt" );
     return 0;
     }
     else if (potwierdzenie=='2')
@@ -372,7 +374,7 @@ void Zamykanie_programu (vector <Uzytkownik> &uzytkownicy)
     cin>>potwierdzeniezakonczenia;
     if (potwierdzeniezakonczenia=='1')
     {
-        fstream plik;
+   /*     fstream plik;
         plik.open("Uzytkownicy.txt",ios::out);
         for (int i=0; i<uzytkownicy.size(); i++)
         {
@@ -380,7 +382,7 @@ void Zamykanie_programu (vector <Uzytkownik> &uzytkownicy)
             plik<<uzytkownicy[i].nazwa<<"|";
             plik<<uzytkownicy[i].haslo<<"|"<<endl;
         }
-        plik.close();
+        plik.close(); */
 
         system("cls");
         cout<<"Dziekujemy za skorzystanie z Twojego Niezbednika";
@@ -530,7 +532,6 @@ vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZal
     Adresat adresat;
     system("cls");
     cout<<"Wprowadz nowa osobe do ksiazki"<<endl;
-
     if (adresaci.empty()==true)
     {
         adresat.idUzytkowe=1;
@@ -543,9 +544,8 @@ vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZal
     cout<<"Podaj imie: ";
     cin.sync();
     getline (cin, adresat.imie);
-    cout<<"Podaj nazwisko: ";  cin>>adresat.nazwisko;
-    cout<<"Podaj numer telefonu: ";
-    cin>>adresat.numer_tel;
+    cout<<"Podaj nazwisko: ";          cin>>adresat.nazwisko;
+    cout<<"Podaj numer telefonu: ";    cin>>adresat.numer_tel;
     int cyfraNumeru=0;
     while (cyfraNumeru<adresat.numer_tel.length())
     {
@@ -563,15 +563,13 @@ vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZal
     {
         if (adresat.numer_tel==adresaci[ilosc].numer_tel)
         {
-            cout<<"Ten numer jest juz przypisany innemu uzytkownikowi! Podaj inny numer: ";
-            cin>>adresat.numer_tel;
+            cout<<"Ten numer jest juz przypisany innemu uzytkownikowi! Podaj inny numer: "; cin>>adresat.numer_tel;
             int cyfraNumeru=0;
             while (cyfraNumeru<adresat.numer_tel.length())
             {
                 if (adresat.numer_tel[cyfraNumeru]<48 || adresat.numer_tel[cyfraNumeru]>57)
                 {
-                    cout<<"Numer niepoprawny! Wprowadz inny numer: ";
-                    cin>>adresat.numer_tel;
+                    cout<<"Numer niepoprawny! Wprowadz inny numer: "; cin>>adresat.numer_tel;
                     cyfraNumeru=0;
                 }
                 else
@@ -589,11 +587,11 @@ vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZal
     cin.sync();
     getline (cin, adresat.adres);
     adresat.idGlobalne=najwyzszyZajetyID+1;
-
     adresaci.push_back(adresat);
     system("cls");
     cout<<"Dodano osobe do kontaktow!";
     Sleep(1000);
+
     return adresaci;
 }
 
@@ -601,7 +599,7 @@ vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZal
 
 
 
-vector <Adresat> Usuwanie_pozycji_z_ksiazki (vector <Adresat> &adresaci)
+vector <Adresat> Usuwanie_pozycji_z_ksiazki (vector <Adresat> &adresaci, int IDZalogowanego)
 {
     char rozmiar=adresaci.size()+'0';
     system("cls");
@@ -640,6 +638,12 @@ vector <Adresat> Usuwanie_pozycji_z_ksiazki (vector <Adresat> &adresaci)
     {
         cout<<"Nie ma takiej pozycji!";  Sleep(1000);
     }
+
+    /*UaktualnienieAdresatowWPliku (adresaci, IDZalogowanego);
+    adresaci.clear();
+    UzupelnieniePozostalychAdresatowWPliku (adresaci, IDZalogowanego);
+    remove("Adresaci.txt");
+    rename( "Adresaci_tymczasowy.txt", "Adresaci.txt" ); */
     return adresaci;
 }
 
@@ -662,7 +666,8 @@ Adresat EdytorDanychWskazanejOsoby (Adresat adresat)
         if (numerEdytowanejInformacji=='1')
         {
             cout<<"Podaj nowe imie: ";
-            cin>>(nowaWartosc, adresat.imie);
+            cin.sync();
+            getline (cin, adresat.imie);
         }
         if (numerEdytowanejInformacji=='2')
         {
@@ -672,7 +677,8 @@ Adresat EdytorDanychWskazanejOsoby (Adresat adresat)
         if (numerEdytowanejInformacji=='3')
         {
             cout<<"Podaj nowy adres: ";
-            cin>>(nowaWartosc, adresat.adres);
+            cin.sync();
+            getline (cin, adresat.adres);
         }
         if (numerEdytowanejInformacji=='4')
         {
@@ -683,6 +689,18 @@ Adresat EdytorDanychWskazanejOsoby (Adresat adresat)
         {
             cout<<"Podaj nowy numer telefonu: ";
             cin>>(nowaWartosc, adresat.numer_tel);
+            int cyfraNumeru=0;
+            while (cyfraNumeru<adresat.numer_tel.length())
+            {
+                if (adresat.numer_tel[cyfraNumeru]<48 || adresat.numer_tel[cyfraNumeru]>57)
+                {
+                    cout<<"Numer niepoprawny! Wprowadz inny numer: ";
+                    cin>>(nowaWartosc, adresat.numer_tel);
+                    cyfraNumeru=0;
+                }
+                else
+                    cyfraNumeru+=1;
+            }
         }
         else if (numerEdytowanejInformacji<'1' || numerEdytowanejInformacji>'5')
         {
@@ -697,7 +715,7 @@ Adresat EdytorDanychWskazanejOsoby (Adresat adresat)
 }
 
 
-vector <Adresat> Edytowanie_pozycji_z_ksiazki (vector <Adresat> &adresaci)
+vector <Adresat> Edytowanie_pozycji_z_ksiazki (vector <Adresat> &adresaci, int idZalogowanego)
 {
     int pozycjaDoEdycji;
     system("cls");
@@ -720,6 +738,7 @@ vector <Adresat> Edytowanie_pozycji_z_ksiazki (vector <Adresat> &adresaci)
         }
         else
             cout<<"Bledny wybor";
+
         Sleep(1200);
         return adresaci;
     }
@@ -749,6 +768,19 @@ int UstalenieNajwyzszegoZajetegoIdAdresata (vector <Adresat>&adresaci)
         plik.close();
     }
     return najwyzszeZajeteID;
+}
+
+
+
+void NadpisDanychOAdresatachDoPliku(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika)
+{
+    UaktualnienieAdresatowWPliku (adresaci, idZalogowanegoUzytkownika);
+    adresaci.clear();
+    UzupelnieniePozostalychAdresatowWPliku (adresaci, idZalogowanegoUzytkownika);
+    remove("Adresaci.txt");
+    rename( "Adresaci_tymczasowy.txt", "Adresaci.txt" );
+    adresaci.clear();
+    PobranieListyAdresatowZPliku(adresaci, idZalogowanegoUzytkownika);
 }
 
 
@@ -794,7 +826,6 @@ int main()
         {
             system("cls");
             cout<<"Jestes zalogowany jako: "<<uzytkownicy[idZalogowanegoUzytkownika-1].nazwa<<endl<<endl;
-            cout<<"Pomocniczo- najwyzsze zajete id: "<<najwyzszyZajetyIdAdresata<<endl;
             cout<<"MENU GLOWNE TWOJEGO NIEZBEDNIKA"<<endl;
             cout<<"Wybierz sposrod opcji:"<<endl<<"1.Wyswietl cala ksiazke adresowa"<<endl;
             cout<<"2.Wyszukaj osobe po imieniu"<<endl<<"3.Wyszukaj osobe po nazwisku"<<endl;
@@ -817,14 +848,17 @@ int main()
             {
                 Wprowadzanie_nowych_osob(adresaci, idZalogowanegoUzytkownika, najwyzszyZajetyIdAdresata);
                 najwyzszyZajetyIdAdresata+=1;
+                NadpisDanychOAdresatachDoPliku(adresaci, idZalogowanegoUzytkownika);
             }
             if (wybor=='5')
             {
-                Usuwanie_pozycji_z_ksiazki(adresaci);
+                Usuwanie_pozycji_z_ksiazki(adresaci, idZalogowanegoUzytkownika);
+                NadpisDanychOAdresatachDoPliku(adresaci, idZalogowanegoUzytkownika);
             }
             if (wybor=='6')
             {
-                Edytowanie_pozycji_z_ksiazki(adresaci);
+                Edytowanie_pozycji_z_ksiazki(adresaci, idZalogowanegoUzytkownika);
+                NadpisDanychOAdresatachDoPliku(adresaci, idZalogowanegoUzytkownika);
             }
 
             if (wybor=='8')
