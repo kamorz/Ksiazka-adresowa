@@ -101,24 +101,21 @@ Adresat PorzadkowanieDanychAdresata (string kompletDanychAdresata)
                 adresat.idGlobalne = atoi (informacja.c_str());
                 break;
             case 2:
-                adresat.idUzytkowe = atoi (informacja.c_str());
-                break;
-            case 3:
                 adresat.idWlasciciela= atoi (informacja.c_str());
                 break;
-            case 4:
+            case 3:
                 adresat.imie= informacja;
                 break;
-            case 5:
+            case 4:
                 adresat.nazwisko= informacja;
                 break;
-            case 6:
+            case 5:
                 adresat.numer_tel= informacja;
                 break;
-            case 7:
+            case 6:
                 adresat.email= informacja;
                 break;
-            case 8:
+            case 7:
                 adresat.adres= informacja;
                 break;
             }
@@ -130,6 +127,17 @@ Adresat PorzadkowanieDanychAdresata (string kompletDanychAdresata)
 }
 
 
+
+vector <Adresat> KorygowanieIDAdresatow (vector <Adresat> &adresaci)
+{
+    int numer=1;
+    for (int i=0; i<adresaci.size();i++)
+    {
+        adresaci[i].idUzytkowe= numer;
+        numer+=1;
+    }
+    return adresaci;
+}
 
 
 
@@ -152,10 +160,9 @@ void PobranieListyAdresatowZPliku (vector <Adresat>&adresaci, int idZalogowanego
             }
         }
         plik.close();
+        KorygowanieIDAdresatow(adresaci);
     }
 }
-
-
 
 
 
@@ -273,7 +280,6 @@ void UaktualnienieAdresatowWPliku (vector <Adresat>&adresaci, int idZalogowanego
         for (int i=0; i<adresaci.size(); i++)
         {
             plik<<adresaci[i].idGlobalne<<"|";
-            plik<<adresaci[i].idUzytkowe<<"|";
             plik<<adresaci[i].idWlasciciela<<"|";
             plik<<adresaci[i].imie<<"|";
             plik<<adresaci[i].nazwisko<<"|";
@@ -309,7 +315,6 @@ void UzupelnieniePozostalychAdresatowWPliku (vector <Adresat>&adresaci, int idZa
         for (int i=0; i<adresaci.size(); i++)
         {
             plik<<adresaci[i].idGlobalne<<"|";
-            plik<<adresaci[i].idUzytkowe<<"|";
             plik<<adresaci[i].idWlasciciela<<"|";
             plik<<adresaci[i].imie<<"|";
             plik<<adresaci[i].nazwisko<<"|";
@@ -593,18 +598,6 @@ vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZal
 }
 
 
-
-
-vector <Adresat> KorygowanieIDAdresatow (vector <Adresat> &adresaci)
-{
-    int numer=1;
-    for (int i=0; i<adresaci.size();i++)
-    {
-        adresaci[i].idUzytkowe= numer;
-        numer+=1;
-    }
-    return adresaci;
-}
 
 
 
