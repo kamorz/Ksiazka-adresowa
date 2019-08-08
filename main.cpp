@@ -538,10 +538,21 @@ vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZal
     cout<<"Podaj imie: ";
     cin.sync();
     getline (cin, adresat.imie);
-    cout<<"Podaj nazwisko: ";
-    cin>>adresat.nazwisko;
+    cout<<"Podaj nazwisko: ";  cin>>adresat.nazwisko;
     cout<<"Podaj numer telefonu: ";
     cin>>adresat.numer_tel;
+    int cyfraNumeru=0;
+    while (cyfraNumeru<adresat.numer_tel.length())
+    {
+        if (adresat.numer_tel[cyfraNumeru]<48 || adresat.numer_tel[cyfraNumeru]>57)
+        {
+            cout<<"Numer niepoprawny! Wprowadz inny numer: ";
+            cin>>adresat.numer_tel;
+            cyfraNumeru=0;
+        }
+        else
+            cyfraNumeru+=1;
+    }
     int ilosc=0;
     while (ilosc< adresaci.size())
     {
@@ -549,6 +560,18 @@ vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZal
         {
             cout<<"Ten numer jest juz przypisany innemu uzytkownikowi! Podaj inny numer: ";
             cin>>adresat.numer_tel;
+            int cyfraNumeru=0;
+            while (cyfraNumeru<adresat.numer_tel.length())
+            {
+                if (adresat.numer_tel[cyfraNumeru]<48 || adresat.numer_tel[cyfraNumeru]>57)
+                {
+                    cout<<"Numer niepoprawny! Wprowadz inny numer: ";
+                    cin>>adresat.numer_tel;
+                    cyfraNumeru=0;
+                }
+                else
+                    cyfraNumeru+=1;
+            }
             ilosc=0;
         }
         else
@@ -556,8 +579,7 @@ vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZal
             ilosc++;
         }
     }
-    cout<<"Podaj e-mail: ";
-    cin>>adresat.email;
+    cout<<"Podaj e-mail: "; cin>>adresat.email;
     cout<<"Podaj adres: ";
     cin.sync();
     getline (cin, adresat.adres);
@@ -566,7 +588,7 @@ vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZal
     adresaci.push_back(adresat);
     system("cls");
     cout<<"Dodano osobe do kontaktow!";
-
+    Sleep(1000);
     return adresaci;
 }
 
