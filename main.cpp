@@ -185,9 +185,18 @@ vector <Uzytkownik> RejestracjaNowegoUzytkownika (vector <Uzytkownik>&uzytkownic
     }
     cout<<"Podaj haslo: ";
     cin>>noweHaslo;
+    if (uzytkownicy.empty())
+    {
+    uzytkownik.id=1;
+    uzytkownik.nazwa=nowaNazwa;
+    uzytkownik.haslo=noweHaslo;
+    }
+    else
+    {
     uzytkownik.id=uzytkownicy.back().id+1;
     uzytkownik.nazwa=nowaNazwa;
     uzytkownik.haslo=noweHaslo;
+    }
     uzytkownicy.push_back(uzytkownik);
     cout<<"Konto zalozone."<<endl;
     Sleep(1000);
@@ -679,7 +688,7 @@ vector <Adresat> Edytowanie_pozycji_z_ksiazki (vector <Adresat> &adresaci)
     system("cls");
     if (adresaci.empty())
     {
-        cout<<"Ksiazka jest pusta. Nie ma pozycji do usuniecia";
+        cout<<"Ksiazka jest pusta. Nie ma pozycji do edycji";
     }
     else
     {
@@ -744,6 +753,12 @@ int main()
         {
             system("cls");
             cout<<"1.Rejestracja"<<endl<<"2.Logowanie"<<endl<<"9.Zakoncz program"<<endl<<endl<<endl;
+            cout<<"//POMOCNICZO- LISTA UZYTKOWNIKOW:"<<endl;
+            for (vector<Uzytkownik>::iterator itr=uzytkownicy.begin(); itr!=uzytkownicy.end(); itr++)
+        {
+
+            cout<<"ID: "<<itr->id<<"  login:  "<<itr->nazwa<<"  haslo:  "<<itr->haslo<<endl;
+        }
             cin>>wybor;
 
             if (wybor=='1')
