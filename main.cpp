@@ -479,8 +479,8 @@ void Wyszukiwanie_po_imieniu (vector <Adresat> &adresaci)
 {
     system("cls");
     string szukane_imie;
-    cout<<"Podaj imie, ktore ma zostac wyszukane"<<endl;
-    cin>>szukane_imie;
+    cout<<"Podaj imie, ktore ma zostac wyszukane"<<endl; cin.sync();
+    getline(cin,szukane_imie);
     int licznikNietrafionychPozycji=0;
 
     system("cls");
@@ -524,10 +524,9 @@ void Wyszukiwanie_po_nazwisku (vector <Adresat> &adresaci)
 {
     system("cls");
     string szukane_nazwisko;
-    cout<<"Podaj nazwisko, ktore ma zostac wyszukane"<<endl;
-    cin>>szukane_nazwisko;
+    cout<<"Podaj nazwisko, ktore ma zostac wyszukane"<<endl;  cin.sync();
+    getline (cin,szukane_nazwisko);
     int licznikNietrafionychPozycji=0;
-
     system("cls");
     if (!adresaci.empty())
     {
