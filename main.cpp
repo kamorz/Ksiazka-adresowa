@@ -528,6 +528,31 @@ void Wyszukiwanie_po_nazwisku (vector <Adresat> &adresaci)
 
 
 
+int UstalenieNajwyzszegoZajetegoIdAdresata (vector <Adresat>&adresaci)
+{
+    int najwyzszeZajeteID=0;
+    Adresat WyszukiwaczOsobyONajwyzszymID;
+    string liniaTekstu="";
+
+    fstream plik;
+    plik.open("Adresaci.txt",ios::in);
+
+    if (plik.good()==true)
+    {
+        while (getline(plik, liniaTekstu))
+        {
+            WyszukiwaczOsobyONajwyzszymID=PorzadkowanieDanychAdresata(liniaTekstu);
+            if (WyszukiwaczOsobyONajwyzszymID.idGlobalne>najwyzszeZajeteID)
+            {
+            najwyzszeZajeteID=WyszukiwaczOsobyONajwyzszymID.idGlobalne;
+            }
+        }
+        plik.close();
+    }
+    return najwyzszeZajeteID;
+}
+
+
 
 vector <Adresat> Wprowadzanie_nowych_osob (vector <Adresat> &adresaci, int IDZalogowanego, int najwyzszyZajetyID)
 {
@@ -641,11 +666,6 @@ vector <Adresat> Usuwanie_pozycji_z_ksiazki (vector <Adresat> &adresaci, int IDZ
         cout<<"Nie ma takiej pozycji!";  Sleep(1000);
     }
 
-    /*UaktualnienieAdresatowWPliku (adresaci, IDZalogowanego);
-    adresaci.clear();
-    UzupelnieniePozostalychAdresatowWPliku (adresaci, IDZalogowanego);
-    remove("Adresaci.txt");
-    rename( "Adresaci_tymczasowy.txt", "Adresaci.txt" ); */
     return adresaci;
 }
 
@@ -748,29 +768,7 @@ vector <Adresat> Edytowanie_pozycji_z_ksiazki (vector <Adresat> &adresaci, int i
 
 
 
-int UstalenieNajwyzszegoZajetegoIdAdresata (vector <Adresat>&adresaci)
-{
-    int najwyzszeZajeteID=0;
-    Adresat WyszukiwaczOsobyONajwyzszymID;
-    string liniaTekstu="";
 
-    fstream plik;
-    plik.open("Adresaci.txt",ios::in);
-
-    if (plik.good()==true)
-    {
-        while (getline(plik, liniaTekstu))
-        {
-            WyszukiwaczOsobyONajwyzszymID=PorzadkowanieDanychAdresata(liniaTekstu);
-            if (WyszukiwaczOsobyONajwyzszymID.idGlobalne>najwyzszeZajeteID)
-            {
-            najwyzszeZajeteID=WyszukiwaczOsobyONajwyzszymID.idGlobalne;
-            }
-        }
-        plik.close();
-    }
-    return najwyzszeZajeteID;
-}
 
 
 
@@ -856,6 +854,7 @@ int main()
             {
                 Usuwanie_pozycji_z_ksiazki(adresaci, idZalogowanegoUzytkownika);
                 NadpisDanychOAdresatachDoPliku(adresaci, idZalogowanegoUzytkownika);
+                najwyzszyZajetyIdAdresata= UstalenieNajwyzszegoZajetegoIdAdresata(adresaci);
             }
             if (wybor=='6')
             {
