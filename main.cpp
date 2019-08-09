@@ -363,7 +363,18 @@ int WylogowanieZKonta (vector <Adresat>&adresaci, int idZalogowanego)
 }
 
 
-
+void ZapisUzytkownikowDoPliku(vector <Uzytkownik> &uzytkownicy)
+{
+        fstream plik;
+        plik.open("Uzytkownicy.txt",ios::out);
+        for (int i=0; i<uzytkownicy.size(); i++)
+        {
+            plik<<uzytkownicy[i].id<<"|";
+            plik<<uzytkownicy[i].nazwa<<"|";
+            plik<<uzytkownicy[i].haslo<<"|"<<endl;
+        }
+        plik.close();
+}
 
 
 
@@ -374,16 +385,7 @@ void Zamykanie_programu (vector <Uzytkownik> &uzytkownicy)
     cin>>potwierdzeniezakonczenia;
     if (potwierdzeniezakonczenia=='1')
     {
-   /*     fstream plik;
-        plik.open("Uzytkownicy.txt",ios::out);
-        for (int i=0; i<uzytkownicy.size(); i++)
-        {
-            plik<<uzytkownicy[i].id<<"|";
-            plik<<uzytkownicy[i].nazwa<<"|";
-            plik<<uzytkownicy[i].haslo<<"|"<<endl;
-        }
-        plik.close(); */
-
+        ZapisUzytkownikowDoPliku(uzytkownicy);
         system("cls");
         cout<<"Dziekujemy za skorzystanie z Twojego Niezbednika";
         Sleep(1000);
@@ -864,6 +866,7 @@ int main()
             if (wybor=='8')
             {
                 zmianaHasla(uzytkownicy, idZalogowanegoUzytkownika);
+                ZapisUzytkownikowDoPliku(uzytkownicy);
             }
             else if (wybor=='9')
             {
