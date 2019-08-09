@@ -22,6 +22,34 @@ struct Uzytkownik
 
 
 
+
+void ZapisUzytkownikowDoPliku(vector <Uzytkownik> &uzytkownicy)
+{
+        fstream plik;
+        plik.open("Uzytkownicy.txt",ios::out);
+        for (int i=0; i<uzytkownicy.size(); i++)
+        {
+            plik<<uzytkownicy[i].id<<"|";
+            plik<<uzytkownicy[i].nazwa<<"|";
+            plik<<uzytkownicy[i].haslo<<"|"<<endl;
+        }
+        plik.close();
+}
+
+
+
+void NadpisNowegoUzytkownikaDoPliku(Uzytkownik uzytkownik)
+{
+    fstream plik;
+    plik.open("Uzytkownicy.txt",ios::app);
+    plik<<uzytkownik.id<<"|";
+    plik<<uzytkownik.nazwa<<"|";
+    plik<<uzytkownik.haslo<<"|"<<endl;
+    plik.close();
+    Sleep(1000);
+}
+
+
 Uzytkownik PorzadkowanieDanychUzytkownika (string kompletDanychUzytkownika)
 {
     Uzytkownik uzytkownik;
@@ -173,7 +201,8 @@ vector <Uzytkownik> RejestracjaNowegoUzytkownika (vector <Uzytkownik>&uzytkownic
     Uzytkownik uzytkownik;
     string nowaNazwa, noweHaslo;
     cout<<"Podaj nazwe uzytkownika: ";
-    cin>>nowaNazwa;
+    cin.sync();
+    getline(cin,nowaNazwa);
     int i=0;
     int iloscUzytkownikow= uzytkownicy.size();
     while (i< iloscUzytkownikow)
@@ -185,35 +214,24 @@ vector <Uzytkownik> RejestracjaNowegoUzytkownika (vector <Uzytkownik>&uzytkownic
             i=0;
         }
         else
-        {
-           i++;
-        }
+            i++;
     }
     cout<<"Podaj haslo: ";
-    cin>>noweHaslo;
-    if (uzytkownicy.empty())
-    {
-    uzytkownik.id=1;
+    cin.sync();
+    getline (cin,noweHaslo);
     uzytkownik.nazwa=nowaNazwa;
     uzytkownik.haslo=noweHaslo;
+    if (uzytkownicy.empty())
+    {
+        uzytkownik.id=1;
     }
     else
     {
-    uzytkownik.id=uzytkownicy.back().id+1;
-    uzytkownik.nazwa=nowaNazwa;
-    uzytkownik.haslo=noweHaslo;
+        uzytkownik.id=uzytkownicy.back().id+1;
     }
     uzytkownicy.push_back(uzytkownik);
     cout<<"Konto zalozone."<<endl;
-
-    fstream plik;
-    plik.open("Uzytkownicy.txt",ios::app);
-    plik<<uzytkownik.id<<"|";
-    plik<<uzytkownik.nazwa<<"|";
-    plik<<uzytkownik.haslo<<"|"<<endl;
-    plik.close();
-    Sleep(1000);
-
+    NadpisNowegoUzytkownikaDoPliku(uzytkownik);
     return uzytkownicy;
 }
 
@@ -226,7 +244,8 @@ int LogowanieUzytkownika (vector <Uzytkownik>&uzytkownicy, vector <Adresat>&adre
     system("cls");
     string wprowadzanaNazwa, wprowadzaneHaslo;
     cout<<"Podaj nazwe uzytkownika: ";
-    cin>>wprowadzanaNazwa;
+    cin.sync();
+    getline(cin,wprowadzanaNazwa);
     int iloscUzytkownikow= uzytkownicy.size(), numerLogowania=0;
     int i=0;
     while (i< iloscUzytkownikow)
@@ -236,20 +255,19 @@ int LogowanieUzytkownika (vector <Uzytkownik>&uzytkownicy, vector <Adresat>&adre
             for (int proby=0; proby <3; proby++)
             {
                 cout<<"Podaj haslo. Pozostalo prob: "<< 3-proby<<":";
-                cin>>wprowadzaneHaslo;
+                cin.sync();
+                getline (cin, wprowadzaneHaslo);
                 if (uzytkownicy[i].haslo==wprowadzaneHaslo)
                 {
                     cout<<"Zalogowales sie"<<endl;
                     Sleep(1000);
                     adresaci.clear();
                     PobranieListyAdresatowZPliku(adresaci,uzytkownicy[i].id);
-                    //cout<<calkowitaIloscAdresatow;
-                    //system("pause");
                     return uzytkownicy[i].id;
                 }
             }
             cout<<"Podales 3 razy nieprawidlowe haslo. Powrot do menu glownego";
-            Sleep(2000);
+            Sleep(1200);
             return 0;
         }
         i++;
@@ -266,7 +284,8 @@ void zmianaHasla (vector <Uzytkownik>&uzytkownicy, int idZalogowanegoUzytkownika
     string haslo;
     int iloscUzytkownikow= uzytkownicy.size();
     cout<<"Podaj nowe haslo: ";
-    cin>>haslo;
+    cin.sync();
+    getline (cin,haslo);
     for (int i=0;i<iloscUzytkownikow;i++)
     {
         if (uzytkownicy[i].id==idZalogowanegoUzytkownika)
@@ -344,37 +363,26 @@ int WylogowanieZKonta (vector <Adresat>&adresaci, int idZalogowanego)
     if (potwierdzenie=='1')
     {
     cout<<"Zostales wylogowany"<<endl;
-    Sleep(1500);
+    Sleep(1000);
     return 0;
     }
     else if (potwierdzenie=='2')
     {
     cout<<"Zdecydowales sie pozostac zalogowany"<<endl;
-    Sleep(1500);
+    Sleep(1000);
     return 1;
     }
     else
     {
         system("cls");
         cout<<"Bledny wybor! Nie nastapi wylogowanie";
-        Sleep(1500);
+        Sleep(1000);
         return 1;
     }
 }
 
 
-void ZapisUzytkownikowDoPliku(vector <Uzytkownik> &uzytkownicy)
-{
-        fstream plik;
-        plik.open("Uzytkownicy.txt",ios::out);
-        for (int i=0; i<uzytkownicy.size(); i++)
-        {
-            plik<<uzytkownicy[i].id<<"|";
-            plik<<uzytkownicy[i].nazwa<<"|";
-            plik<<uzytkownicy[i].haslo<<"|"<<endl;
-        }
-        plik.close();
-}
+
 
 
 
@@ -415,7 +423,6 @@ void Wyswietlanie_calej_listy (vector <Adresat> &adresaci)
     {
         for (vector<Adresat>::iterator itr=adresaci.begin(); itr!=adresaci.end(); itr++)
         {
-            //cout<<"probnie wyswietlamy ID globalne: "<<itr->idGlobalne<<endl<<endl;
             cout<<"ID:             "<<itr->idUzytkowe<<endl;
             cout<<"imie:           "<<itr->imie<<endl;
             cout<<"nazwisko:       "<<itr->nazwisko<<endl;
