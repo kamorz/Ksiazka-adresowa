@@ -199,7 +199,7 @@ vector <Uzytkownik> RejestracjaNowegoUzytkownika (vector <Uzytkownik>&uzytkownic
 {
     system("cls");
     Uzytkownik uzytkownik;
-    string nowaNazwa, noweHaslo;
+    string nowaNazwa, noweHaslo="", noweHasloPotwierdzajace=" ";
     cout<<"Podaj nazwe uzytkownika: ";
     cin.sync();
     getline(cin,nowaNazwa);
@@ -209,18 +209,31 @@ vector <Uzytkownik> RejestracjaNowegoUzytkownika (vector <Uzytkownik>&uzytkownic
     {
         if (uzytkownicy[i].nazwa==nowaNazwa)
         {
-            cout<<"Taki uzytkownik istnieje. Wpisz inny login: ";
-            cin>>nowaNazwa;
+            cout<<"Taki uzytkownik istnieje. Wpisz inny login: ";  cin>>nowaNazwa;
             i=0;
         }
         else
             i++;
     }
-    cout<<"Podaj haslo: ";
-    cin.sync();
-    getline (cin,noweHaslo);
-    uzytkownik.nazwa=nowaNazwa;
-    uzytkownik.haslo=noweHaslo;
+    while(noweHaslo!=noweHasloPotwierdzajace)
+    {
+        cout<<"Podaj haslo: ";              cin.sync();
+        getline (cin,noweHaslo);
+        cout<<"Potwierdz nowe haslo: ";     cin.sync();
+        getline (cin, noweHasloPotwierdzajace);
+        if (noweHaslo!=noweHasloPotwierdzajace)
+        {
+            cout<<"Bledny wpis! Podane przez Ciebie hasla nie sa identyczne! Sprobuj ponownie"<<endl;
+            Sleep(1200);
+            system("cls");
+        }
+        else
+        {
+            cout<<"Konto zalozone!";
+            Sleep(1200);
+        }
+    }
+    uzytkownik.nazwa=nowaNazwa; uzytkownik.haslo=noweHaslo;
     if (uzytkownicy.empty())
     {
         uzytkownik.id=1;
@@ -230,7 +243,6 @@ vector <Uzytkownik> RejestracjaNowegoUzytkownika (vector <Uzytkownik>&uzytkownic
         uzytkownik.id=uzytkownicy.back().id+1;
     }
     uzytkownicy.push_back(uzytkownik);
-    cout<<"Konto zalozone."<<endl;
     NadpisNowegoUzytkownikaDoPliku(uzytkownik);
     return uzytkownicy;
 }
@@ -281,17 +293,35 @@ int LogowanieUzytkownika (vector <Uzytkownik>&uzytkownicy, vector <Adresat>&adre
 
 void zmianaHasla (vector <Uzytkownik>&uzytkownicy, int idZalogowanegoUzytkownika)
 {
-    string haslo;
+    string haslo="", hasloPotwierdzajace=" ";
     int iloscUzytkownikow= uzytkownicy.size();
-    cout<<"Podaj nowe haslo: ";
-    cin.sync();
-    getline (cin,haslo);
-    for (int i=0;i<iloscUzytkownikow;i++)
+    while(haslo!=hasloPotwierdzajace)
+    {
+        cout<<"Podaj nowe haslo: ";     cin.sync();
+        getline (cin,haslo);
+        cout<<"Potwierdz haslo: ";        cin.sync();
+        getline (cin,hasloPotwierdzajace);
+        {
+            if (haslo!=hasloPotwierdzajace)
+            {
+                cout<<"Oba hasla nie sa identyczne! Sprobuj ponownie";
+                Sleep(1200);
+                system("cls");
+            }
+            else
+            {
+                cout<<"Poprawnie zmieniono haslo!";
+                Sleep(1200);
+                system("cls");
+            }
+        }
+    }
+
+    for (int i=0; i<iloscUzytkownikow; i++)
     {
         if (uzytkownicy[i].id==idZalogowanegoUzytkownika)
         {
             uzytkownicy[i].haslo=haslo;
-            cout<<"Haslo zostalo zmienione"<<endl;
             Sleep(1000);
         }
     }
